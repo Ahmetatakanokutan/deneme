@@ -45,7 +45,6 @@ class JoystickView @JvmOverloads constructor(
     var isHorizontalSnapBack: Boolean = false
         set(value) {
             field = value
-            // Extra logic if needed when the property is set
         }
     var isLeftJoystick: Boolean = false
 
@@ -80,6 +79,12 @@ class JoystickView @JvmOverloads constructor(
         canvas.drawCircle(hatX, hatY, hatRadius, hatPaint)
     }
 
+    fun resetYAxis() {
+        hatY = centerY + baseRadius
+        invalidate()
+        joystickListener?.onJoystickMoved(0f, 1f, id)
+    }
+
     override fun onTouchEvent(event: MotionEvent): Boolean {
         val displacement = sqrt((event.x - centerX).pow(2) + (event.y - centerY).pow(2))
         val ratio = if (displacement < baseRadius) 1f else baseRadius / displacement
@@ -110,31 +115,28 @@ class JoystickView @JvmOverloads constructor(
                     id
                 )
             }
+
             MotionEvent.ACTION_UP -> {
-                if (isHorizontalSnapBack) {
+                // Snap back horizontally if required
+                if (isHorizontalSnapBack || isLeftJoystick) {
                     hatX = centerX
                 }
-                if (isLeftJoystick) {
-                    // Reset rudder value to zero when touch is released
-                    hatX = centerX
-                    joystickListener?.onJoystickMoved(
-                        (hatX - centerX) / baseRadius,
-                        (hatY - centerY) / baseRadius,
-                        id
-                    )
-                } else {
-                    // Rudder değerini sıfırla
+                if (!isLeftJoystick) {
+                    // Snap back vertically
                     hatY = centerY
-                    joystickListener?.onJoystickMoved(
-                        0f,
-                        (hatY - centerY) / baseRadius,
-                        id
-                    )
+                    hatX = centerX
                 }
+
+
+                // Notify the joystick listener
+                joystickListener?.onJoystickMoved(
+                    (hatX - centerX) / baseRadius,
+                    (hatY - centerY) / baseRadius,
+                    id
+                )
                 invalidate()
             }
         }
         return true
     }
-
 }

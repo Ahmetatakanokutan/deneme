@@ -1,10 +1,10 @@
 package com.example.atakhanmobile
 
 import android.os.Bundle
-import android.view.animation.AnimationUtils
+import android.widget.Button
 import android.util.Log
 import android.widget.EditText
-import android.widget.TextView // Yeni eklenen kütüphane
+import android.widget.TextView
 import android.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import com.example.myapp.R
@@ -19,11 +19,12 @@ class MainActivity : AppCompatActivity(), JoystickListener {
     private lateinit var planeEntity: PlaneEntity
     private var ipAddress: String? = null
 
-    private lateinit var throttleTextView: TextView // Tanımlama eklendi
-    private lateinit var rudderTextView: TextView // Tanımlama eklendi
-    private lateinit var elevatorTextView: TextView // Tanımlama eklendi
-    private lateinit var ailerionRightTextView: TextView // Tanımlama eklendi
-    private lateinit var ailerionLeftTextView: TextView // Tanımlama eklendi
+    private lateinit var throttleTextView: TextView
+    private lateinit var rudderTextView: TextView
+    private lateinit var elevatorTextView: TextView
+    private lateinit var ailerionRightTextView: TextView
+    private lateinit var ailerionLeftTextView: TextView
+    private lateinit var leftJoystick: JoystickView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -43,6 +44,12 @@ class MainActivity : AppCompatActivity(), JoystickListener {
         elevatorTextView = findViewById(R.id.elevatorTextView)
         ailerionRightTextView = findViewById(R.id.ailerionRightTextView)
         ailerionLeftTextView = findViewById(R.id.ailerionLeftTextView)
+
+        // Initialize motor button
+        val motorButton: Button = findViewById(R.id.motorButton)
+        motorButton.setOnClickListener {
+            leftJoystick.resetYAxis()
+        }
     }
 
     private fun showIpInputDialog() {
@@ -74,20 +81,14 @@ class MainActivity : AppCompatActivity(), JoystickListener {
     private fun initializeJoysticks() {
         planeEntity = PlaneEntity(throttle = "0", rudder = 0, elevator = 0, ailerionRight = 0, ailerionLeft = 0)
 
-        val leftJoystick = findViewById<JoystickView>(R.id.leftJoystick)
+        leftJoystick = findViewById(R.id.leftJoystick)
         val rightJoystick = findViewById<JoystickView>(R.id.rightJoystick)
 
         leftJoystick.setJoystickListener(this)
         rightJoystick.setJoystickListener(this)
 
-        // Set specific behaviors for the left joystick
         leftJoystick.isLeftJoystick = true
         leftJoystick.isHorizontalSnapBack = true
- // Reverse Y axis
-
-        // Right joystick defaults are already suitable
-        rightJoystick.isLeftJoystick = false
-        rightJoystick.isHorizontalSnapBack = true
     }
 
     override fun onJoystickMoved(xPercent: Float, yPercent: Float, id: Int) {
@@ -96,10 +97,10 @@ class MainActivity : AppCompatActivity(), JoystickListener {
                 if (xPercent != 0f) {
                     planeEntity.rudder = (xPercent * 50).toInt()
                 } else {
-                    planeEntity.throttle = ((-yPercent +1)  * 50).toInt().toString()
+                    planeEntity.throttle = ((-yPercent + 1) * 50).toInt().toString()
                 }
                 if (xPercent == 0f) {
-                    planeEntity.rudder = 0 // Reset rudder to zero when joystick is released
+                    planeEntity.rudder = 0
                 }
             }
             R.id.rightJoystick -> {
@@ -113,16 +114,11 @@ class MainActivity : AppCompatActivity(), JoystickListener {
     }
 
     private fun updatePlaneDataUI() {
-
-
-        // Update UI with plane data
         throttleTextView.text = "Throttle: ${planeEntity.throttle}"
         rudderTextView.text = "Rudder: ${planeEntity.rudder}"
         elevatorTextView.text = "Elevator: ${planeEntity.elevator}"
         ailerionRightTextView.text = "Ailerion Right: ${planeEntity.ailerionRight}"
         ailerionLeftTextView.text = "Ailerion Left: ${planeEntity.ailerionLeft}"
-
-
     }
 
     private fun sendPlaneData() {
@@ -139,7 +135,6 @@ class MainActivity : AppCompatActivity(), JoystickListener {
 
             Log.d("sendPlaneData", "Sending data to $url: $jsonData")
 
-            // Use Coroutine to handle network request
             CoroutineScope(Dispatchers.IO).launch {
                 val result = postJsonData(url, jsonData.toString())
                 withContext(Dispatchers.Main) {
