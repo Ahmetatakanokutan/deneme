@@ -96,7 +96,7 @@ class MainActivity : AppCompatActivity(), JoystickListener {
                 if (xPercent != 0f) {
                     planeEntity.rudder = (xPercent * 50).toInt()
                 } else {
-                    planeEntity.throttle = (-yPercent  * 100).toInt().toString()
+                    planeEntity.throttle = ((-yPercent +1)  * 50).toInt().toString()
                 }
                 if (xPercent == 0f) {
                     planeEntity.rudder = 0 // Reset rudder to zero when joystick is released
@@ -113,7 +113,7 @@ class MainActivity : AppCompatActivity(), JoystickListener {
     }
 
     private fun updatePlaneDataUI() {
-        val fadeIn = AnimationUtils.loadAnimation(this, R.anim.fade_in)
+
 
         // Update UI with plane data
         throttleTextView.text = "Throttle: ${planeEntity.throttle}"
@@ -122,12 +122,7 @@ class MainActivity : AppCompatActivity(), JoystickListener {
         ailerionRightTextView.text = "Ailerion Right: ${planeEntity.ailerionRight}"
         ailerionLeftTextView.text = "Ailerion Left: ${planeEntity.ailerionLeft}"
 
-        // Apply animations
-        throttleTextView.startAnimation(fadeIn)
-        rudderTextView.startAnimation(fadeIn)
-        elevatorTextView.startAnimation(fadeIn)
-        ailerionRightTextView.startAnimation(fadeIn)
-        ailerionLeftTextView.startAnimation(fadeIn)
+
     }
 
     private fun sendPlaneData() {
