@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:tools="http://schemas.android.com/tools"
+                xmlns:app="http://schemas.android.com/apk/res-auto"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                tools:context=".MainActivity">
+
+    <com.example.atakhanmobile.JoystickView
+            android:id="@+id/leftJoystick"
+            android:layout_width="250dp"
+            android:layout_height="250dp"
+            android:layout_alignParentStart="true"
+            android:layout_centerVertical="true"
+            android:layout_margin="16dp" />
+
+    <com.example.atakhanmobile.JoystickView
+            android:id="@+id/rightJoystick"
+            android:layout_width="250dp"
+            android:layout_height="250dp"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:layout_margin="16dp" />
+
+    <LinearLayout
+            android:id="@+id/textViewsLayout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:padding="16dp"
+            android:background="@drawable/rounded_corner_background">
+
+        <TextView
+                android:id="@+id/throttleTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Throttle: 0"
+                android:textSize="18sp"
+                android:textColor="@android:color/black"
+                android:padding="8dp" />
+
+        <TextView
+                android:id="@+id/rudderTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Rudder: 0"
+                android:textSize="18sp"
+                android:textColor="@android:color/black"
+                android:padding="8dp" />
+
+        <TextView
+                android:id="@+id/elevatorTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Elevator: 0"
+                android:textSize="18sp"
+                android:textColor="@android:color/black"
+                android:padding="8dp" />
+
+        <TextView
+                android:id="@+id/ailerionRightTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Ailerion Right: 0"
+                android:textSize="18sp"
+                android:textColor="@android:color/black"
+                android:padding="8dp" />
+
+        <TextView
+                android:id="@+id/ailerionLeftTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Ailerion Left: 0"
+                android:textSize="18sp"
+                android:textColor="@android:color/black"
+                android:padding="8dp" />
+
+    </LinearLayout>
+</RelativeLayout>
